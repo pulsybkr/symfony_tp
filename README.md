@@ -35,8 +35,8 @@ CulinaryConnect est une plateforme de partage de recettes de cuisine moderne et 
 
 1. Cloner le repository
 ```bash
-git clone [URL_DU_REPO]
-cd culinary-connect
+git clone https://github.com/pulsybkr/symfony_tp
+cd symfony_tp
 ```
 
 2. Installer les dépendances PHP
