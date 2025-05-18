@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier mon profil{% endblock %}
+
+{% block body %}
+    <div class="max-w-4xl mx-auto px-4 py-8">
+        <div class="bg-white rounded-2xl shadow-lg p-8">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-900">Modifier mon profil</h1>
+                <p class="text-gray-600">Mettez à jour vos informations personnelles</p>
+            </div>
+
+            {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        {{ form_row(form.username) }}
+                    </div>
+                    <div>
+                        {{ form_row(form.email) }}
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-4">
+                    <a href="{{ path('app_user_profile') }}" 
+                       class="px-4 py-2 text-gray-600 hover:text-gray-800">
+                        Annuler
+                    </a>
+                    <button type="submit" 
+                            class="px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors duration-300">
+                        Enregistrer les modifications
+                    </button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %} 

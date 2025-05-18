@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes recettes favorites{% endblock %}
+
+{% block body %}
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-8">Mes recettes favorites</h1>
+
+        {% if favorites|length > 0 %}
+            {% include 'partials/all-recette.html.twig' with { recettes: favorites } %}
+        {% else %}
+            <div class="bg-white rounded-2xl shadow-lg p-8 text-center">
+                <div class="text-6xl mb-4">❤️</div>
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">Vous n'avez pas encore de recettes favorites</h2>
+                <p class="text-gray-600 mb-6">Explorez les recettes de la communauté et ajoutez vos préférées à vos favoris !</p>
+                <a href="{{ path('app_recette') }}" class="btn-primary">
+                    <i data-feather="search" class="w-4 h-4 mr-2"></i>
+                    Découvrir des recettes
+                </a>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %} 

@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Toutes les recettes{% endblock %}
+
+{% block body %}
+    <h1 class="text-2xl font-bold mb-6">🧁 Toutes les recettes</h1>
+
+    {% include 'partials/all-recette.html.twig' with { recettes: recettes } %}
+{% endblock %}

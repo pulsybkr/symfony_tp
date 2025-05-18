@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de bord - Administration{% endblock %}
+
+{% block body %}
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-8">Tableau de bord d'administration</h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-gray-900">Utilisateurs</h2>
+                    <span class="text-2xl">👥</span>
+                </div>
+                <p class="text-gray-600 mb-4">Gérez les utilisateurs de la plateforme</p>
+                <a href="{{ path('app_admin_users') }}" class="text-pink-600 hover:text-pink-700 font-medium">
+                    Voir les utilisateurs
+                    <i data-feather="arrow-right" class="w-4 h-4 inline ml-1"></i>
+                </a>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-gray-900">Recettes</h2>
+                    <span class="text-2xl">🍳</span>
+                </div>
+                <p class="text-gray-600 mb-4">Gérez les recettes publiées</p>
+                <a href="{{ path('app_admin_recettes') }}" class="text-pink-600 hover:text-pink-700 font-medium">
+                    Voir les recettes
+                    <i data-feather="arrow-right" class="w-4 h-4 inline ml-1"></i>
+                </a>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-gray-900">Avis</h2>
+                    <span class="text-2xl">⭐</span>
+                </div>
+                <p class="text-gray-600 mb-4">Gérez les avis des utilisateurs</p>
+                <a href="{{ path('app_admin_reviews') }}" class="text-pink-600 hover:text-pink-700 font-medium">
+                    Voir les avis
+                    <i data-feather="arrow-right" class="w-4 h-4 inline ml-1"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %} 

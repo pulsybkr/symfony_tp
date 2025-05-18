@@ -1,0 +1,50 @@
+<div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden h-full flex flex-col">
+    {% if recette.image %}
+        <div class="relative h-48 w-full">
+            <img src="{{ recette.image }}" alt="{{ recette.title }}" class="w-full h-full object-cover">
+        </div>
+    {% endif %}
+    
+    <div class="p-6 flex flex-col flex-grow">
+        <div class="flex items-center gap-3 mb-4">
+            {% include 'partials/avatar.html.twig' with { user: recette.author } %}
+            <div>
+                <p class="font-semibold text-gray-800 truncate">{{ recette.author.username }}</p>
+                <p class="text-xs text-gray-500">{{ recette.getCreateAt()|date('d/m/Y H:i') }}</p>
+            </div>
+        </div>
+
+        <h2 class="text-xl font-bold mb-3 text-gray-900 line-clamp-1">{{ recette.title }}</h2>
+        <p class="text-gray-600 mb-4 line-clamp-3 flex-grow">{{ recette.description }}</p>
+
+        <div class="flex items-center gap-4 mb-4">
+            <div class="flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="text-sm text-gray-600">{{ recette.preparationTime }} min</span>
+            </div>
+            {% if recette.difficulty %}
+                <div class="flex items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    <span class="text-sm text-gray-600">{{ recette.difficulty }}</span>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="flex justify-between items-center mt-auto">
+            <a href="{{ path('app_recette_show', { id: recette.id }) }}"
+               class="inline-flex items-center px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors duration-300">
+                Voir la recette
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+            </a>
+            <div class="flex items-center gap-2">
+                <span class="text-sm text-gray-500">{{ recette.reviews|length }} avis</span>
+            </div>
+        </div>
+    </div>
+</div>

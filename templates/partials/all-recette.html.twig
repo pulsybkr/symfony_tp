@@ -1,0 +1,7 @@
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4">
+	{% for recette in recettes %}
+		{% include 'partials/card-recette.html.twig' with { recette: recette } %}
+	{% else %}
+		<p class="col-span-full text-center text-gray-500">Aucune recette trouvée.</p>
+	{% endfor %}
+</div>

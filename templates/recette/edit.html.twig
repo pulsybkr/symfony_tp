@@ -1,0 +1,162 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier la recette{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/css/autoComplete.min.css">
+{% endblock %}
+
+{% block body %}
+    <div class="max-w-4xl mx-auto px-4 py-8">
+        <div class="bg-white rounded-2xl shadow-lg p-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-8">Modifier la recette</h1>
+
+            {{ form_start(form, {'attr': {'class': 'space-y-8'}}) }}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        {{ form_row(form.title) }}
+                    </div>
+                    <div>
+                        {{ form_row(form.preparationTime) }}
+                    </div>
+                </div>
+
+                <div>
+                    {{ form_row(form.description) }}
+                </div>
+
+                <div>
+                    {{ form_row(form.image) }}
+                </div>
+
+                <div>
+                    {{ form_row(form.difficulty) }}
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-xl font-semibold text-gray-900">Ingrédients</h2>
+                        <button type="button" class="add-ingredient px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors duration-300">
+                            <i data-feather="plus" class="w-4 h-4 mr-2"></i>
+                            Ajouter un ingrédient
+                        </button>
+                    </div>
+                    <div class="ingredients-list space-y-4" data-prototype="{{ form_widget(form.ingredients.vars.prototype)|e('html_attr') }}">
+                        {% for ingredient in form.ingredients %}
+                            <div class="ingredient-item bg-gray-50 p-4 rounded-lg">
+                                {{ form_row(ingredient) }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-xl font-semibold text-gray-900">Étapes de préparation</h2>
+                        <button type="button" class="add-step px-4 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors duration-300">
+                            <i data-feather="plus" class="w-4 h-4 mr-2"></i>
+                            Ajouter une étape
+                        </button>
+                    </div>
+                    <div class="steps-list space-y-4" data-prototype="{{ form_widget(form.steps.vars.prototype)|e('html_attr') }}">
+                        {% for step in form.steps %}
+                            <div class="step-item bg-gray-50 p-4 rounded-lg">
+                                {{ form_row(step) }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-4">
+                    <a href="{{ path('app_recette_show', {'id': recette.id}) }}" 
+                       class="px-4 py-2 text-gray-600 hover:text-gray-800">
+                        Annuler
+                    </a>
+                    <button type="submit" 
+                            class="px-6 py-2 bg-pink-600 text-white rounded-lg hover:bg-pink-700 transition-colors duration-300">
+                        Enregistrer les modifications
+                    </button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/autoComplete.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const addIngredientButton = document.querySelector('.add-ingredient');
+            const addStepButton = document.querySelector('.add-step');
+            const ingredientsList = document.querySelector('.ingredients-list');
+            const stepsList = document.querySelector('.steps-list');
+
+            let ingredientIndex = {{ form.ingredients|length }};
+            let stepIndex = {{ form.steps|length }};
+
+            addIngredientButton.addEventListener('click', function() {
+                const prototype = ingredientsList.dataset.prototype;
+                const newIngredient = prototype.replace(/__name__/g, ingredientIndex++);
+                const div = document.createElement('div');
+                div.className = 'ingredient-item bg-gray-50 p-4 rounded-lg';
+                div.innerHTML = newIngredient;
+                ingredientsList.appendChild(div);
+                initAutocomplete(div.querySelector('.ingredient-name'));
+            });
+
+            addStepButton.addEventListener('click', function() {
+                const prototype = stepsList.dataset.prototype;
+                const newStep = prototype.replace(/__name__/g, stepIndex++);
+                const div = document.createElement('div');
+                div.className = 'step-item bg-gray-50 p-4 rounded-lg';
+                div.innerHTML = newStep;
+                stepsList.appendChild(div);
+            });
+
+            function initAutocomplete(element) {
+                if (!element) return;
+
+                new autoComplete({
+                    selector: element,
+                    data: {
+                        src: async (query) => {
+                            try {
+                                const response = await fetch(`/api/ingredients/search?q=${query}`);
+                                const data = await response.json();
+                                return data;
+                            } catch (error) {
+                                return [];
+                            }
+                        },
+                        keys: ["name"]
+                    },
+                    placeHolder: "Rechercher un ingrédient...",
+                    threshold: 2,
+                    debounce: 300,
+                    searchEngine: "strict",
+                    resultsList: {
+                        render: true,
+                        container: (source) => {
+                            source.setAttribute("class", "absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow-lg mt-1");
+                        },
+                        destination: element,
+                        position: "afterend"
+                    },
+                    resultItem: {
+                        content: (data, source) => {
+                            source.innerHTML = `<div class="p-2 hover:bg-gray-100 cursor-pointer">${data.match}</div>`;
+                        },
+                        element: "div"
+                    },
+                    onSelection: (feedback) => {
+                        element.value = feedback.selection.value.name;
+                    }
+                });
+            }
+
+            document.querySelectorAll('.ingredient-name').forEach(initAutocomplete);
+        });
+    </script>
+{% endblock %} 
