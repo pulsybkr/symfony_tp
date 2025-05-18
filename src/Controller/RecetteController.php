@@ -15,13 +15,64 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class RecetteController extends AbstractController
 {
     #[Route('/', name: 'app_recette')]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $recettes = $entityManager->getRepository(Recette::class)->findAll();
+        $search = $request->query->get('search');
+        $difficulty = $request->query->get('difficulty');
+        $sort = $request->query->get('sort', 'newest');
+        $minTime = $request->query->get('min_time');
+        $maxTime = $request->query->get('max_time');
+
+        $qb = $entityManager->getRepository(Recette::class)->createQueryBuilder('r');
+        
+        if ($search) {
+            $qb->andWhere('r.title LIKE :search OR r.description LIKE :search')
+               ->setParameter('search', '%' . $search . '%');
+        }
+
+        if ($difficulty) {
+            $qb->andWhere('r.difficulty = :difficulty')
+               ->setParameter('difficulty', $difficulty);
+        }
+
+        if ($minTime) {
+            $qb->andWhere('r.preparationTime >= :minTime')
+               ->setParameter('minTime', $minTime);
+        }
+        if ($maxTime) {
+            $qb->andWhere('r.preparationTime <= :maxTime')
+               ->setParameter('maxTime', $maxTime);
+        }
+
+        switch ($sort) {
+            case 'oldest':
+                $qb->orderBy('r.createAt', 'ASC');
+                break;
+            case 'title_asc':
+                $qb->orderBy('r.title', 'ASC');
+                break;
+            case 'title_desc':
+                $qb->orderBy('r.title', 'DESC');
+                break;
+            case 'time_asc':
+                $qb->orderBy('r.preparationTime', 'ASC');
+                break;
+            case 'time_desc':
+                $qb->orderBy('r.preparationTime', 'DESC');
+                break;
+            default: 
+                $qb->orderBy('r.createAt', 'DESC');
+        }
+        
+        $recettes = $qb->getQuery()->getResult();
 
         return $this->render('recette/index.html.twig', [
-            'controller_name' => 'RecetteController',
             'recettes' => $recettes,
+            'search' => $search,
+            'difficulty' => $difficulty,
+            'sort' => $sort,
+            'minTime' => $minTime,
+            'maxTime' => $maxTime
         ]);
     }
 
